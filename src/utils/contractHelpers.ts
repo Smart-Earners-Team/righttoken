@@ -4,7 +4,7 @@ import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { simpleRpcProvider } from "./providers";
 import BusdAbi from "../config/abi/busd.json"
 import rtknSaleABI from "../config/abi/rtknSaleABI.json"
-import { getBusdAddress, getZltSaleAddress } from "./addressHelpers";
+import { getBusdAddress, getRtknSaleAddress } from "./addressHelpers";
 
 export const getContract = (abi: any, address: string, signer?: Signer | Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider;
@@ -23,6 +23,6 @@ export const getBusdContract = (signer?: Signer | Provider) => {
   return getContract(BusdAbi, getBusdAddress(), signer);
 };
 
-export const getZltContract = (signer?: Signer | Provider) => {
-  return getContract(rtknSaleABI, getZltSaleAddress(), signer);
+export const getRtknContract = (signer?: Signer | Provider) => {
+  return getContract(rtknSaleABI, getRtknSaleAddress(), signer);
 };

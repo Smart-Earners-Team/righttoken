@@ -16,12 +16,12 @@ import classNames from "classnames";
 import {
   getBusdContract,
   getContract,
-  getZltContract,
+  getRtknContract,
 } from "../utils/contractHelpers";
 import {
   getAddress,
   getBusdAddress,
-  getZltSaleAddress,
+  getRtknSaleAddress,
 } from "../utils/addressHelpers";
 import CustomButton from "../components/Buttons/Button";
 import { CallSignerType } from "../types";
@@ -36,10 +36,10 @@ import { SEO } from "../components/Seo";
 import { FaGlobeAmericas, FaVideo, FaWrench } from "react-icons/fa";
 import Typewriter from "typewriter-effect"
 
-const buyZLT = async (amount: string, ref: string, signer: CallSignerType) => {
-  const contract = getZltContract(signer);
+const buyRTKN = async (amount: string, ref: string, signer: CallSignerType) => {
+  const contract = getRtknContract(signer);
   const value = new BigNumber(amount).times(BIG_TEN.pow(18)).toJSON();
-  const tx = await contract.buyZLT(value, ref);
+  const tx = await contract.buyRTKN(value, ref);
   const receipt = await tx.wait();
   return receipt.status;
 };
@@ -71,16 +71,16 @@ const index = ({ location }: PageProps) => {
 
   const { onApprove } = useApproveToken(
     getBusdContract(library?.getSigner()),
-    getZltSaleAddress()
+    getRtknSaleAddress()
   );
 
   const { origin } = location;
 
-  const checkZltAllowance = useCallback(async () => {
+  const checkRtknAllowance = useCallback(async () => {
     if (account && active && library) {
       const allowance = await checkTokenAllowance(
         account,
-        getZltSaleAddress(),
+        getRtknSaleAddress(),
         getBusdAddress(),
         library.getSigner(account)
       );
@@ -98,14 +98,14 @@ const index = ({ location }: PageProps) => {
   }, [account, active, library]);
 
   useEffect(() => {
-    checkZltAllowance();
+    checkRtknAllowance();
   }, [account, active, library]);
 
   const handleApprove = useCallback(async () => {
     if (account && library) {
       setFetching(true);
       try {
-        checkZltAllowance().then(async (res) => {
+        checkRtknAllowance().then(async (res) => {
           if (!res) {
             await onApprove();
             setIsApproved(true);
@@ -124,12 +124,12 @@ const index = ({ location }: PageProps) => {
     }
   }, [onApprove, account, library, toastError]);
 
-  const handleBuyZLT = useCallback(async () => {
+  const handleBuyRTKN = useCallback(async () => {
     if (library) {
       setFetching(true);
       try {
-        await buyZLT(amountToPay, refAddress, library.getSigner());
-        toastSuccess("ZLT has been sent to your wallet.");
+        await buyRTKN(amountToPay, refAddress, library.getSigner());
+        toastSuccess("RTKN has been sent to your wallet.");
         triggerFetchTokens();
       } catch (err) {
         console.error(err);
@@ -209,7 +209,7 @@ const index = ({ location }: PageProps) => {
                     errorMsg={errorMsg}
                     onChangeHandler={handleInputChange}
                     value={amountToPay}
-                    onSubmit={handleBuyZLT}
+                    onSubmit={handleBuyRTKN}
                     trx={fetching}
                     isDisabled={
                       fetching ||
@@ -313,7 +313,7 @@ const TextInput = ({
   isDisabled,
   trx,
 }: TextInputProps) => {
-  const [zltBal, setZltBal] = useState("0");
+  const [rtknBal, setRtknBal] = useState("0");
 
   const { fast } = useContext(RefreshContext);
   const { active, account, library } = useActiveWeb3React();
@@ -323,7 +323,7 @@ const TextInput = ({
     wallet: { balance },
   } = useAppContext();
 
-  // ZLT Balance
+  // RTKN Balance
   useEffect(() => {
     (async () => {
       if (account && library) {
@@ -332,14 +332,14 @@ const TextInput = ({
           .balanceOf(account)
           .then((p: ethers.BigNumber) => {
             const bal = new BigNumber(p._hex).div(BIG_TEN.pow(18)).toJSON();
-            setZltBal(bal);
+            setRtknBal(bal);
           })
           .catch(() => {
             // console.error(e, "Error getting balance");
-            setZltBal("0");
+            setRtknBal("0");
           });
       } else {
-        setZltBal("0");
+        setRtknBal("0");
       }
     })();
     // also add the fast and slow vars from the refresh context
@@ -376,7 +376,7 @@ const TextInput = ({
                 )}
               >
                 <span>RTKN Balance</span>
-                <span>{zltBal} RTKN</span>
+                <span>{rtknBal} RTKN</span>
               </div>
               <div
                 className={classNames(

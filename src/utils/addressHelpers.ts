@@ -7,4 +7,4 @@ export const getAddress = (address: Address): string => {
 };
 
 export const getBusdAddress = () => getAddress(addresses.busd);
-export const getZltSaleAddress = () => getAddress(addresses.rtknSale)
+export const getRtknSaleAddress = () => getAddress(addresses.rtknSale)

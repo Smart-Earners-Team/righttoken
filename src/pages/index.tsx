@@ -105,24 +105,18 @@ const index = ({ location }: PageProps) => {
     if (account && library) {
       setFetching(true);
       try {
-        checkRtknAllowance().then(async (res) => {
-          if (!res) {
-            await onApprove();
-            setIsApproved(true);
-          }
-        });
-      } catch (e) {
-        console.error(e, "Failed");
-        toastError(
-          "Error",
-          "Please try again. Confirm the transaction and make sure you are paying enough gas!"
-        );
-        setIsApproved(false);
-      } finally {
-        setFetching(false);
-      }
+        await onApprove();
+        await checkRtknAllowance()
+        setErrorMsg("");
+      toastSuccess("Approval successful!");
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Approval failed. Please try again.");
+      toastError(error.message);
     }
-  }, [onApprove, account, library, toastError]);
+    setFetching(false);
+  }
+}, [account, library, onApprove, toastError, toastSuccess]);
 
   const handleBuyRTKN = useCallback(async () => {
     if (library) {

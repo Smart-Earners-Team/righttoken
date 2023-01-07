@@ -1,4 +1,4 @@
-import React, {
+onApproveimport React, {
   Fragment,
   useCallback,
   useContext,
@@ -108,7 +108,7 @@ const index = ({ location }: PageProps) => {
         checkRtknAllowance().then(async (res) => {
           if (!res) {
             await onApprove();
-            setIsApproved(true);
+           // setIsApproved(true);
           }
         });
       } catch (e) {
